@@ -22,6 +22,9 @@ int remain_length_encode(uint32_t length, uint8_t encode[4], uint32_t *encode_le
 	} while (length > 0);
 
 	*encode_len = index;
+    if (*encode_len > MQTT_REMAIN_LEN_ENCODE_MAX_LENGTH) {
+        return MQTT_INVALID_PARAM;
+    }
 	return MQTT_SUCCESS;
 }
 
