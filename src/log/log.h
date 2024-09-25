@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 #define MQTT_LOG_LEVEL_DEBUG 0
 #define MQTT_LOG_LEVEL_INFO 1
@@ -12,7 +13,7 @@
 #define MQTT_LOG_LEVEL_NONE 5
 
 #ifndef MQTT_LOG_PREFIX
-#define MQTT_LOG_PREFIX "[MQTT %s: %d]"
+#define MQTT_LOG_PREFIX "[MQTT %s:%d] "
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
