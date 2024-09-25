@@ -211,29 +211,29 @@ int connect_message_build(connect_payload_t *conn_payload,
     }
 
     /* 构建 CONNECT 报文 */
-    ptr = message;
-
+    *message_len = 0;
     message_type_with_reversed = (uint8_t)message_type_encode(MQTT_MESSAGE_TYPE_CONNECT);
-    memcpy(ptr, message_type_with_reversed, 1);
-    ptr += 1;
+    memcpy(message, &message_type_with_reversed, 1);
+    message += 1;
     *message_len += 1;
 
     remain_length = payload_len + sizeof(var_header);
+    mqtt_log_debug("remain length %u, payload length %u", remain_length, payload_len);
     
-    ret = remain_length_encode(remain_length, ptr, &field_len);
+    ret = remain_length_encode(remain_length, message, &field_len);
     if (ret != MQTT_SUCCESS || field_len > MQTT_REMAIN_LEN_ENCODE_MAX_LENGTH) {
         mqtt_log_error("remain length encode failed, remain length %u", remain_length);
         goto exit;
     }
-    ptr += field_len;
+    message += field_len;
     *message_len += field_len;
 
-    memcpy(ptr, &var_header, sizeof(var_header));
-    ptr += sizeof(var_header);
+    memcpy(message, &var_header, sizeof(var_header));
+    message += sizeof(var_header);
     *message_len += sizeof(var_header);
 
-    memcpy(ptr, payload, payload_len);
-    ptr += payload_len;
+    memcpy(message, payload, payload_len);
+    message += payload_len;
     *message_len += payload_len;
     
     // return MQTT_SUCCESS;
@@ -383,8 +383,8 @@ int connect_message_parse(uint8_t *message, uint32_t message_len,
         return MQTT_CONNECT_FLAGS_ERROR;
     }
     
-    ptr += sizeof(var_header);
-    message_len -= sizeof(var_header);
+    ptr += sizeof(connect_variable_header_t);
+    message_len -= sizeof(connect_variable_header_t);
     if (message_len < 2) {
         mqtt_log_error("message len is too short");
         return MQTT_CONNECT_MESSAGE_ERROR;
