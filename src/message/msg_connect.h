@@ -26,9 +26,8 @@ typedef struct connect_variable_header_ {
 }__attribute__((packed)) connect_variable_header_t;
  
 /*
- * TODO：
  * connect 报文的载荷部分
- * 可以没有，但如果有，必须按照顺序构建，客户端表示符 | 遗嘱主题 | 遗嘱消息 | 用户名 | 密码
+ * 其中某个字段可以没有，但如果有，必须按照顺序构建，客户端表示符 | 遗嘱主题 | 遗嘱消息 | 用户名 | 密码
  * 例如，如果flag字段为：0b11000000，表示由用户名密码，那么载荷部分应该为：用户端标识符 | 用户名 | 密码 
 */
 typedef struct connect_payload_ {
@@ -47,22 +46,22 @@ typedef struct connect_payload_ {
 /**
  * @brief 构建CONNECT报文
  * 
- * @param client_id         用户端ID [可选，为空时为默认值]；
- * @param client_id_len     用户端ID长度 [必须，]
- * @param will_topic        遗嘱主题 [可选]
- * @param will_topic_len    WilTopic长度 [will_topic 不为空时必需]
- * @param will_msg          遗嘱内容 [可选]
- * @param will_msg_len      WilMsg长度 [will_msg 不为空时必需]
- * @param username          用户名 [可选]
- * @param username_len      用户名长度 [username 不为空时必需]
- * @param password          密码 [可选]
- * @param password_len      密码长度 [password 不为空时必需]
- * @param keep_alive        KeepAlive时间 [可选]
- * @param clean_session     是否清除会话 [可选]
- * @param will_retain       是否设置遗嘱保留 [可选]
- * @param will_qos          遗嘱QOS [可选]
- * @param message           报文指针
- * @param message_len       报文长度指针
+ * @param conn_payload->client_id           用户端ID [可选，为空时为默认值]；
+ * @param conn_payload->client_id_len       用户端ID长度 [必须，]
+ * @param conn_payload->will_topic          遗嘱主题 [可选]
+ * @param conn_payload->will_topic_len      WilTopic长度 [will_topic 不为空时必需]
+ * @param conn_payload->will_msg            遗嘱内容 [可选]
+ * @param conn_payload->will_msg_len        WilMsg长度 [will_msg 不为空时必需]
+ * @param conn_payload->username            用户名 [可选]
+ * @param conn_payload->username_len        用户名长度 [username 不为空时必需]
+ * @param conn_payload->password            密码 [可选]
+ * @param conn_payload->password_len        密码长度 [password 不为空时必需]
+ * @param keep_alive                        KeepAlive时间 [可选]
+ * @param clean_session                     是否清除会话 [可选]
+ * @param will_retain                       是否设置遗嘱保留 [可选]
+ * @param will_qos                          遗嘱QOS [可选]
+ * @param message                           报文指针
+ * @param message_len                       报文长度指针
  * 
  * @return 成功返回0，失败返回错误码
 */
@@ -73,4 +72,27 @@ int connect_message_build(connect_payload_t *conn_payload,
                            uint8_t will_qos,
                            uint8_t *message, uint32_t *message_len);
 
+
+int connect_payload_release(connect_payload_t *conn_payload);
+
+/**
+ * @brief 解析 CONNECT 报文
+ * 
+ * @param message       原始报文
+ * @param message_len   原始报文长度
+ * @param conn_payload  解析出的连接信息(参考 connect_payload_t 结构体定义)
+ *                      注意结构体中所有的指针都需要在其生命周期结束时检查释放（conn_payload_release)
+ * @param keep_alive    连接保活时间
+ * @param clean_session 是否清除会话
+ * @param will_retain   遗嘱保留标志
+ * @param will_qos      遗嘱QOS等级（0， 1， 2）
+ * 
+ * @return 0 成功，其他失败
+*/
+int connect_message_parse(uint8_t *message, uint32_t message_len,
+                          connect_payload_t *conn_payload,
+                          uint16_t *keep_alive,
+                          uint8_t *clean_session,
+                          uint8_t *will_retain,
+                          uint8_t *will_qos);
 #endif

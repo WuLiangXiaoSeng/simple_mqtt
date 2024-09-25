@@ -245,6 +245,49 @@ exit:
 }
 
 
+int connect_payload_release(connect_payload_t *conn_payload)
+{
+    if (conn_payload == NULL) {
+        mqtt_log_error("connect payload is NULL");
+        return MQTT_INVALID_PARAM;
+    }
+    if ((conn_payload->password_len != 0) && (conn_payload->password != NULL)) {
+        free(conn_payload->password);
+    }
+
+    if ((conn_payload->username_len != 0) && (conn_payload->username != NULL)) {
+        free(conn_payload->username);
+    }
+    
+    if ((conn_payload->will_msg_len != 0) && (conn_payload->will_msg != NULL)) {
+        free(conn_payload->will_msg);
+    }
+    
+    if ((conn_payload->will_topic_len != 0) && (conn_payload->will_topic != NULL)) {
+        free(conn_payload->will_topic);
+    }
+    
+    if ((conn_payload->client_id_len != 0) && (conn_payload->client_id != NULL)) {
+        free(conn_payload->client_id);
+    }
+
+    return MQTT_SUCCESS;
+}
+
+/**
+ * @brief 解析 CONNECT 报文
+ * 
+ * @param message       原始报文
+ * @param message_len   原始报文长度
+ * @param conn_payload  解析出的连接信息(参考 connect_payload_t 结构体定义)
+ *                      注意结构体中所有的指针都需要在其生命周期结束时检查释放（conn_payload_release)
+ * @param keep_alive    连接保活时间
+ * @param clean_session 是否清除会话
+ * @param will_retain   遗嘱保留标志
+ * @param will_qos      遗嘱QOS等级（0， 1， 2）
+ * 
+ * @return 0 成功，其他失败
+*/
 int connect_message_parse(uint8_t *message, uint32_t message_len,
                           connect_payload_t *conn_payload,
                           uint16_t *keep_alive,
@@ -252,6 +295,12 @@ int connect_message_parse(uint8_t *message, uint32_t message_len,
                           uint8_t *will_retain,
                           uint8_t *will_qos)
 {
+    if (message == NULL || conn_payload == NULL || keep_alive == NULL || \
+        clean_session == NULL || will_retain == NULL || will_qos == NULL) {
+        mqtt_log_error("invalid param");
+        return MQTT_INVALID_PARAM;        
+    }
+    
     uint8_t *ptr;
     uint32_t remain_length;
     uint32_t field_len;
@@ -517,26 +566,7 @@ int connect_message_parse(uint8_t *message, uint32_t message_len,
     return MQTT_SUCCESS;
     
 error:
-
-    if ((conn_payload->password_len != 0) && (conn_payload->password != NULL)) {
-        free(conn_payload->password);
-    }
-
-    if ((conn_payload->username_len != 0) && (conn_payload->username != NULL)) {
-        free(conn_payload->username);
-    }
-    
-    if ((conn_payload->will_msg_len != 0) && (conn_payload->will_msg != NULL)) {
-        free(conn_payload->will_msg);
-    }
-    
-    if ((conn_payload->will_topic_len != 0) && (conn_payload->will_topic != NULL)) {
-        free(conn_payload->will_topic);
-    }
-    
-    if ((conn_payload->client_id_len != 0) && (conn_payload->client_id != NULL)) {
-        free(conn_payload->client_id);
-    }
+    connect_payload_release(conn_payload);    
     
     return ret;
 }
