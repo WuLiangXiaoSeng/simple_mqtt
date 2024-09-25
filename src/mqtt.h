@@ -13,3 +13,5 @@
 #define MQTT_CONNECT_MESSAGE_ERROR      8       /* CONNECT 报文错误 */
 #define MQTT_CLIENT_ID_LENGTH_UNSUPPORT 9       /* 客户端ID长度不支持 */
 #define MQTT_CONNECT_FLAGS_ERROR        10      /* 错误的连接标志位 */
+#define MQTT_CONNACK_MESSAGE_ERROR      11      /* CONNACK 报文错误 */
+#define MQTT_CONNACK_CODE_ERROR         12      /* CONNACK CODE错误 */
