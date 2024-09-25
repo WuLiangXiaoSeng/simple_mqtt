@@ -1,54 +1,34 @@
-# 项目名称
-TARGET = libmyproject
-
-# 编译器
 CC = gcc
+CFLAGS = -Wall -g -I. -Ilog -Imessage -Inetwork -fPIC
+LDFLAGS = -shared  # 用于生成动态库
 
-# 编译选项
-CFLAGS = -Wall -Wextra -Isrc -Isrc/log -Isrc/message -Isrc/network
+AR = ar
+ARFLAGS = -rsv
 
-# 链接选项
-LDFLAGS =
+BUILD_DIR=build
+LIB_DIR=lib
 
-# 源文件目录
-SRCDIR = src
+# 源文件和目标文件
+SRC = $(wildcard log/*.c network/*.c message/*.c)
+# OBJ = $(SRC:.c=.o)
+OBJ = $(foreach file,$(SRC),$(file:.c=.o))
 
-# 目标文件目录
-OBJDIR = obj
+all: simple_mqtt.a libsimple_mqtt.so
 
-# 所有源文件
-SRC = $(wildcard $(SRCDIR)/*.c) \
-		$(wildcard $(SRCDIR)/log/*.c) \
-		$(wildcard $(SRCDIR)/message/*.c) \
-		$(wildcard $(SRCDIR)/network/*.c)
+$(LIB_DIR):
+	mkdir -p $(LIB_DIR)
 
-# 对应的目标文件
-OBJ = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRC))
+simple_mqtt.a: $(OBJ) $(LIB_DIR)
+	$(AR) $(ARFLAGS) $(LIB_DIR)/$@ $(OBJ)
+	rm -f $(OBJ)
 
-# 最终目标
-LIB = $(TARGET).a
+libsimple_mqtt.so: $(OBJ) $(LIB_DIR)
+	$(CC) $(LDFLAGS) -o $(LIB_DIR)/$@ $(OBJ)
+	rm -f $(OBJ)
 
-# 默认目标
-all: $(LIB)
-
-# 创建目标文件夹
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
-
-# 规则：生成静态库
-$(LIB): $(OBJ)
-	ar rcs $@ $^
-
-# 规则：编译 .c 文件到 .o 文件
-$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# 清理规则
+# 清理生成文件
 clean:
-	rm -rf $(OBJDIR) $(LIB)
-
-# 显示帮助信息
-help:
-	@echo "Usage:"
-	@echo "  make        - Build the library"
-	@echo "  make clean  - Clean up object files and library"
+	rm -rf $(OBJ) build
