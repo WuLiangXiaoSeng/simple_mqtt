@@ -13,7 +13,7 @@ SRC = $(wildcard log/*.c network/*.c message/*.c)
 # OBJ = $(SRC:.c=.o)
 OBJ = $(foreach file,$(SRC),$(file:.c=.o))
 
-all: simple_mqtt.a libsimple_mqtt.so
+all: libsimple_mqtt.so
 
 $(LIB_DIR):
 	mkdir -p $(LIB_DIR)
