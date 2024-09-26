@@ -66,7 +66,7 @@ int publish_message_build(uint8_t dup, mqtt_qos_t qos, uint8_t retain,
     }
     
     /* 检查message 长度是否足够 */
-    if (message_len < (1 + feild_len + remain_len)) {
+    if (*message_len < (1 + feild_len + remain_len)) {
         mqtt_log_error("message_len %u < %u", *message_len, 1 + feild_len + remain_len);
         return MQTT_MEMORY_NOBUFFER;
     }

@@ -35,7 +35,7 @@ int remain_length_decode(uint8_t *encode, uint32_t *encode_len, uint32_t *length
 	uint8_t byte_value;
 	*encode_len = *encode_len <= 4 ? *encode_len : 4;
     *length = 0;
-	while (index < encode_len) {
+	while (index < *encode_len) {
 		byte_value = encode[index] & (~(1<<7));
 		*length += (byte_value * base);
 		if ((encode[index] & (1<<7)) == 0) {
