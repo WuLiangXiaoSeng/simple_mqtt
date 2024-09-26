@@ -105,3 +105,16 @@ int parse_string_field(uint8_t *buffer, uint32_t buffer_len, uint8_t *str, uint1
     return MQTT_SUCCESS;
 }
 
+int locate_string_field(uint8_t *buffer, uint32_t buffer_len, uint8_t **str, uint16_t *str_len)
+{
+    if (buffer == NULL || str_len == NULL || str == NULL) {
+        mqtt_log_error("invalid param");
+        return MQTT_INVALID_PARAM;
+    }
+
+    *str = buffer + sizeof(uint16_t);
+    *str_len = ntohs(*(uint16_t *)buffer);
+    
+    return MQTT_SUCCESS;
+}
+

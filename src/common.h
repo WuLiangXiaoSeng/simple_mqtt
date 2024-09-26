@@ -20,6 +20,13 @@ typedef enum {
     MQTT_MESSAGE_TYPE_MAX = 15,
 } mqtt_message_type_t;
 
+typedef enum {
+    MQTT_QOS_0 = 0b00,
+    MQTT_QOS_1 = 0b01,
+    MQTT_QOS_2 = 0b10,
+    MQTT_QOS_MAX = 0b11,
+} mqtt_qos_t;
+
 #define MQTT_REMAIN_LEN_ENCODE_MAX_LENGTH 4
 
 #endif

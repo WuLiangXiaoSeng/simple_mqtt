@@ -15,3 +15,6 @@
 #define MQTT_CONNECT_FLAGS_ERROR        10      /* 错误的连接标志位 */
 #define MQTT_CONNACK_MESSAGE_ERROR      11      /* CONNACK 报文错误 */
 #define MQTT_CONNACK_CODE_ERROR         12      /* CONNACK CODE错误 */
+#define MQTT_PUBLISH_MESSAGE_ERROR      13
+#define MQTT_PUBLISH_QOS_ERROR          14      /* PUBLISH QOS错误 */
+#define MQTT_PUBACK_MESSAGE_ERROR       15

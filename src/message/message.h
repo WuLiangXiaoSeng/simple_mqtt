@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 
-#define message_type_encode(message_type) (((message_type << 4) & 0xF0))
+#define MESSAGE_TYPE_MASK 0xF0
+
+#define message_type_encode(message_type) (((message_type << 4) & MESSAGE_TYPE_MASK))
 
 typedef struct message_fixed_header_ {
     uint8_t packet_type_with_reserved;    /* 4bit 报文类型 + 4bit 保留位，但由于保留位暂未定义 */
@@ -17,5 +19,7 @@ int remain_length_decode(uint8_t *encode, uint32_t *encode_len, uint32_t *length
 int build_string_field(uint8_t *str, uint16_t str_len, uint8_t *buffer, uint32_t *buffer_len);
 
 int parse_string_field(uint8_t *buffer, uint32_t buffer_len, uint8_t *str, uint16_t *str_len);
+
+int locate_string_field(uint8_t *buffer, uint32_t buffer_len, uint8_t **str, uint16_t *str_len);
 
 #endif
