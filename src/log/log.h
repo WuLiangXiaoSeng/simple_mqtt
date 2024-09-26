@@ -55,7 +55,7 @@ extern uint32_t mqtt_log_level;
     do { \
         int i; \
         for (i = 0; i < len; i++) { \
-            printf("%02x ", data[i]); \
+            printf("%02X ", data[i]); \
             if ((i + 1) % 16 == 0) printf("\n"); \
         } \
         printf("\n"); \

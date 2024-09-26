@@ -21,4 +21,11 @@ typedef struct connack_variable_header_ {
     uint8_t connack_code;
 }__attribute__((packed)) connack_variable_header_t;
 
+int connack_message_build(uint8_t sp, connack_code_t connack_code, 
+                        uint8_t *message, uint32_t *message_len);
+
+
+int connack_message_parse(uint8_t *message, uint32_t message_len,
+                          connack_code_t *connack_code, uint8_t *sp);
+
 #endif

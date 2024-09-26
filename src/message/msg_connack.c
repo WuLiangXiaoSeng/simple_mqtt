@@ -9,8 +9,8 @@ int connack_message_build(uint8_t sp, connack_code_t connack_code,
                         uint8_t *message, uint32_t *message_len)
 {
     connack_variable_header_t variable_header = {0};
-    uint8_t *ptr;
     uint32_t remain_length, field_len;
+    uint8_t message_type_with_servered;
     int ret;
 
     variable_header.connack_code = connack_code;
@@ -18,21 +18,24 @@ int connack_message_build(uint8_t sp, connack_code_t connack_code,
         variable_header.reserved_and_sp |= (0xFF & CONNACK_SP_MASK);
     }
     
-    ptr = message;
-    memcpy(ptr, message_type_encode(MQTT_MESSAGE_TYPE_CONNACK), 1);
-    ptr += 1;
+    /* 构建 CONNACK 消息 */
+    *message_len = 0;
+    message_type_with_servered = message_type_encode(MQTT_MESSAGE_TYPE_CONNACK);
+    memcpy(message, &message_type_with_servered, 1);
+    message += 1;
     *message_len += 1;
 
     remain_length = sizeof(variable_header);
-    ret = remain_length_encode(remain_length, ptr, &field_len);
+    ret = remain_length_encode(remain_length, message, &field_len);
     if (ret != MQTT_SUCCESS) {
         mqtt_log_error("remain_length_encode failed, remain length %u", remain_length);
         return ret;
     }
-    ptr += field_len;
+    message += field_len;
     *message_len += field_len;
-    memcpy(ptr, &variable_header, sizeof(variable_header));
-    ptr += sizeof(variable_header);
+    
+    memcpy(message, &variable_header, sizeof(variable_header));
+    message += sizeof(variable_header);
     *message_len += sizeof(variable_header);
 
     return MQTT_SUCCESS;
@@ -45,6 +48,7 @@ int connack_message_parse(uint8_t *message, uint32_t message_len,
         mqtt_log_error("invalid param");
         return MQTT_INVALID_PARAM;
     }
+    mqtt_log_debug("message_len %u", message_len);
     
     if (*message != message_type_encode(MQTT_MESSAGE_TYPE_CONNACK)) {
         mqtt_log_error("invalid message type %u, need %u", *message, MQTT_MESSAGE_TYPE_CONNACK);
@@ -66,7 +70,7 @@ int connack_message_parse(uint8_t *message, uint32_t message_len,
     message_len -= field_len;
 
     if ((remain_length != sizeof(connack_variable_header_t)) || (message_len != remain_length)) {
-        mqtt_log_error("invalid remain length %u, need %u", remain_length, sizeof(connack_variable_header_t));
+        mqtt_log_error("invalid remain length %u, message len %u", remain_length, message_len);
         return MQTT_CONNACK_MESSAGE_ERROR;
     }
 

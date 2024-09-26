@@ -16,6 +16,9 @@ msg_connect_test: msg_connect_test.c
 message_test: message_test.c
 	$(CC) $(CFLAGS) message_test.c -o $(BUILD_DIR)/$@ $(LDFLAGS)
 
+msg_connack_test: msg_connack_test.c
+	$(CC) $(CFLAGS) msg_connack_test.c -o $(BUILD_DIR)/$@ $(LDFLAGS)
+
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
