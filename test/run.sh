@@ -1,7 +1,8 @@
 #!/bin/bash
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/root/code/mqtt/src/lib/
+PWD=$(pwd)
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PWD}/../src/lib/
 
-BUILD_DIR=$(pwd)/build
+BUILD_DIR=${PWD}/build
 
 # file_exit()
 # {
