@@ -8,7 +8,7 @@
 #include "log.h"
 
 
-int publish_message_build(uint8_t dup, mqtt_qos_t qos, uint8_t retain, 
+int publish_message_build(uint8_t dup, uint8_t qos, uint8_t retain, 
                          uint8_t *topic, uint16_t topic_len,
                          uint16_t *packet_id,
                          uint8_t *payload, uint32_t payload_len,
@@ -119,7 +119,7 @@ int publish_message_build(uint8_t dup, mqtt_qos_t qos, uint8_t retain,
  * @param payload_len   载荷长度
 */
 int publish_message_parse(uint8_t *message, uint32_t message_len,
-                          uint8_t *dup, mqtt_qos_t *qos, uint8_t *retain,
+                          uint8_t *dup, uint8_t *qos, uint8_t *retain,
                           uint8_t **topic, uint16_t *topic_len, 
                           uint16_t *packet_id,
                           uint8_t **payload, uint32_t *payload_len)
@@ -180,6 +180,8 @@ int publish_message_parse(uint8_t *message, uint32_t message_len,
         memcpy(packet_id, message, sizeof(uint16_t));
         message += sizeof(uint16_t);
         message_len -= sizeof(uint16_t);
+    } else {
+        *packet_id = 0;
     }
     
     /* 载荷指针和长度 */
