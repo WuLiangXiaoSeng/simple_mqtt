@@ -45,7 +45,7 @@ int puback_message_parse(uint8_t *message, uint32_t message_len, uint16_t *packe
     }
     message += 1;
 
-    memcpy(packet_id, message + 1, sizeof(uint16_t));
+    memcpy(packet_id, message, sizeof(uint16_t));
 
     return MQTT_SUCCESS;
 }
