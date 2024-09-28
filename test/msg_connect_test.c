@@ -35,37 +35,37 @@ int test_connect_message(void) {
     conn_payload.password_len = strlen(conn_payload.password);
     message_len += conn_payload.password_len;
     
-    minitest_printf("message_len: %u\n", message_len);
+    mini_printf("message_len: %u\n", message_len);
     uint8_t *message = (uint8_t *)malloc(message_len);
     if (message == NULL) {
-        minitest_printf("malloc failed\n");
+        mini_printf("malloc failed\n");
         return -1;
     }
     int ret = connect_message_build(&conn_payload, keep_alive, clean_session, will_retain, will_qos, message, &message_len);
     if (ret != MQTT_SUCCESS) {
-        minitest_printf("connect_message_build failed\n");
+        mini_printf("connect_message_build failed\n");
         free(message);
         return -1;
     }
-    minitest_printf("message_len: %u\n", message_len);
-    minitest_hexdump(message, message_len);
+    mini_printf("message_len: %u\n", message_len);
+    mini_hexdump(message, message_len);
 
     connect_payload_t conn_payload_parse = {0};
     ret = connect_message_parse(message, message_len, &conn_payload_parse, &keep_alive, &clean_session, &will_retain, &will_qos);
     if (ret != MQTT_SUCCESS) {
-        minitest_printf("connect_message_parse failed\n");
+        mini_printf("connect_message_parse failed\n");
         free(message);
         return -1;
     }
-    minitest_printf("keep_alive: %u\n", keep_alive);
-    minitest_printf("clean_session: %u\n", clean_session);
-    minitest_printf("will_retain: %u\n", will_retain);
-    minitest_printf("will_qos: %u\n", will_qos);
-    minitest_printf("client_id: %s, len: %u\n", conn_payload_parse.client_id, conn_payload_parse.client_id_len);
-    minitest_printf("will_topic: %s, len: %u\n", conn_payload_parse.will_topic, conn_payload_parse.will_topic_len);
-    minitest_printf("will_msg: %s, len: %u\n", conn_payload_parse.will_msg, conn_payload_parse.will_msg_len);
-    minitest_printf("username: %s, len: %u\n", conn_payload_parse.username, conn_payload_parse.username_len);
-    minitest_printf("password: %s, len: %u\n", conn_payload_parse.password, conn_payload_parse.password_len);
+    mini_printf("keep_alive: %u\n", keep_alive);
+    mini_printf("clean_session: %u\n", clean_session);
+    mini_printf("will_retain: %u\n", will_retain);
+    mini_printf("will_qos: %u\n", will_qos);
+    mini_printf("client_id: %s, len: %u\n", conn_payload_parse.client_id, conn_payload_parse.client_id_len);
+    mini_printf("will_topic: %s, len: %u\n", conn_payload_parse.will_topic, conn_payload_parse.will_topic_len);
+    mini_printf("will_msg: %s, len: %u\n", conn_payload_parse.will_msg, conn_payload_parse.will_msg_len);
+    mini_printf("username: %s, len: %u\n", conn_payload_parse.username, conn_payload_parse.username_len);
+    mini_printf("password: %s, len: %u\n", conn_payload_parse.password, conn_payload_parse.password_len);
     
     connect_payload_release(&conn_payload_parse);
     free(message);

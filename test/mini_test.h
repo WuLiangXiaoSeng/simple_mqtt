@@ -11,10 +11,10 @@
 
 #define MINITEST_PREFIX "[MINITEST %s:%d] "
 
-#define minitest_printf(format, args...) \
+#define mini_printf(format, args...) \
     printf(MINITEST_PREFIX format "\n", __func__, __LINE__, ##args);
 
-#define minitest_hexdump(data, len) \
+#define mini_hexdump(data, len) \
     do { \
         int i; \
         for (i = 0; i < len; i++) { \

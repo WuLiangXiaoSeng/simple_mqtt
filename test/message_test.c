@@ -33,21 +33,21 @@ int test_remain_length_encode()
     for (int i = 0; i < 8; i++) {
         ret = remain_length_encode(length[i], buffer, &buffer_len);
         if (ret != MQTT_SUCCESS) {
-            minitest_printf("remain_length_encode %u failed\n", length[i]);
+            mini_printf("remain_length_encode %u failed\n", length[i]);
             failed += 1;
             continue;
         }
-        minitest_hexdump(buffer, buffer_len);
+        mini_hexdump(buffer, buffer_len);
         if (buffer_len != encode_len[i] || memcmp(buffer, encode[i], buffer_len)) {
-            minitest_printf("remain_length_encode %u failed\n", length[i]);
+            mini_printf("remain_length_encode %u failed\n", length[i]);
             failed += 1;
         }
     }
 
     if (failed != 0) {
-        minitest_printf(RED "FAILED %u/8" END, failed);
+        mini_printf(RED "FAILED %u/8" END, failed);
     } else {
-        minitest_printf(GREEN "PASSED" END);
+        mini_printf(GREEN "PASSED" END);
     }
     
     return 0;
@@ -68,27 +68,27 @@ int test_remain_length_decode()
 
     for (int i = 0; i < 8; i++) {
         remain_length_encode(length[i], buffer, &buffer_len_e);
-        minitest_hexdump(buffer, buffer_len_e);
+        mini_hexdump(buffer, buffer_len_e);
         buffer_len_d = buffer_len_e;
         ret = remain_length_decode(buffer, &buffer_len_d, &len);
         if (ret != MQTT_SUCCESS) {
-            minitest_printf("remain_length_decode %u failed\n", length[i]);
+            mini_printf("remain_length_decode %u failed\n", length[i]);
             failed += 1;
             continue;
         }
 
         if (len != length[i] || buffer_len_d != buffer_len_e) {
-            minitest_printf("remain_length_decode %u failed, result: %u\n", length[i], len);
+            mini_printf("remain_length_decode %u failed, result: %u\n", length[i], len);
             failed += 1;
         } else {
-            minitest_printf("remain_length_decode %u success, result: %u\n", length[i], len);
+            mini_printf("remain_length_decode %u success, result: %u\n", length[i], len);
         }
     }
 
     if (failed != 0) {
-        minitest_printf(RED "FAILED %u/8" END, failed);
+        mini_printf(RED "FAILED %u/8" END, failed);
     } else {
-        minitest_printf(GREEN "PASSED" END);
+        mini_printf(GREEN "PASSED" END);
     }
 
     return 0;
