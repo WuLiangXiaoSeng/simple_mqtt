@@ -2,3 +2,4 @@
 src/build
 src/lib
 test/build
+**/*.o
