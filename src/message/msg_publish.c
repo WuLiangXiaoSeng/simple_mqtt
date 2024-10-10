@@ -90,6 +90,7 @@ int publish_message_build(uint8_t dup, uint8_t qos, uint8_t retain,
     *message_len += feild_len;
     
     if (qos > MQTT_QOS_0) {
+        packet_id = htons(packet_id);
         memcpy(message, packet_id, sizeof(uint16_t));
         message += sizeof(uint16_t);
         *message_len += sizeof(uint16_t);
@@ -178,6 +179,7 @@ int publish_message_parse(uint8_t *message, uint32_t message_len,
     
     if (*qos > MQTT_QOS_0) {
         memcpy(packet_id, message, sizeof(uint16_t));
+        *packet_id = ntohs(*packet_id);
         message += sizeof(uint16_t);
         message_len -= sizeof(uint16_t);
     } else {

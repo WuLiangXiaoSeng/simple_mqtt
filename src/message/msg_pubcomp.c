@@ -20,6 +20,7 @@ int pubcomp_message_build(uint16_t packet_id, uint8_t *message, uint32_t *messag
     message += sizeof(pubcomp_fixed_header);
     *message_len += sizeof(pubcomp_fixed_header);
     
+    packet_id = htons(packet_id);
     memcpy(message, &packet_id, sizeof(uint16_t));
     message += sizeof(uint16_t);
     *message_len += sizeof(uint16_t);
@@ -46,6 +47,7 @@ int pubcomp_message_parse(uint8_t *message, uint32_t message_len, uint16_t *pack
     message += 1;
 
     memcpy(packet_id, message, sizeof(uint16_t));
+    *packet_id = ntohs(*packet_id);
 
     return MQTT_SUCCESS;
 }

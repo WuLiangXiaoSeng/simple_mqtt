@@ -55,6 +55,7 @@ int subscribe_message_build(uint16_t packet_id, topic_filter_t *filter_list, uin
     *message_len += field_len;
     message += field_len;
 
+    packet_id = htons(packet_id);
     memcpy(message, &packet_id, sizeof(uint16_t));
     *message_len += sizeof(uint16_t);
     message += sizeof(uint16_t);
@@ -123,6 +124,7 @@ int subscribe_message_parse(uint8_t *message, uint32_t message_len,
     }
 
     memcpy(packet_id, message, sizeof(uint16_t));
+    *packet_id = ntohs(*packet_id);
     message += sizeof(uint16_t);
     message_len -= sizeof(uint16_t);
     
