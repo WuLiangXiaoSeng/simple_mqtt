@@ -28,6 +28,9 @@ msg_puback_test: msg_puback_test.c
 msg_subscribe_test: msg_subscribe_test.c
 	$(CC) $(CFLAGS) msg_subscribe_test.c -o $(BUILD_DIR)/$@ $(LDFLAGS)
 
+msg_suback_test: msg_suback_test.c
+	$(CC) $(CFLAGS) msg_suback_test.c -o $(BUILD_DIR)/$@ $(LDFLAGS)
+
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)

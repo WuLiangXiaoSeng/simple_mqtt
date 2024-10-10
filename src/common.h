@@ -25,6 +25,7 @@ typedef enum {
     MQTT_QOS_1 = 0b01,
     MQTT_QOS_2 = 0b10,
     MQTT_QOS_MAX = 0b11,
+    MQTT_QOS_REJECT = 0x80,
 } mqtt_qos_t;
 
 #define MQTT_REMAIN_LEN_ENCODE_MAX_LENGTH 4
