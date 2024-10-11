@@ -15,4 +15,4 @@ run_function()
 }
 
 
-run_function $1
+run_function msg_${1}_test

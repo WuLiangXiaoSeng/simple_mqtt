@@ -10,6 +10,8 @@ BUILD_DIR=build
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
+all: msg_connect_test message_test msg_connack_test msg_publish_test msg_puback_test msg_subscribe_test msg_suback_test
+
 msg_connect_test: msg_connect_test.c 
 	$(CC) $(CFLAGS) msg_connect_test.c -o $(BUILD_DIR)/$@ $(LDFLAGS)
 
