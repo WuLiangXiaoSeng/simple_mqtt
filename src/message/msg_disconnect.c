@@ -26,12 +26,12 @@ int disconnect_message_parse(uint8_t *message, uint32_t message_len)
         return MQTT_INVALID_PARAM;
     }
     
-    if (message[0] & MESSAGE_TYPE_MASK != message_type_encode(MQTT_MESSAGE_TYPE_DISCONNECT)) {
+    if ((message[0] & MESSAGE_TYPE_MASK) != message_type_encode(MQTT_MESSAGE_TYPE_DISCONNECT)) {
         return MQTT_MESSAGE_TYPE_ERROR;
     }
     
     /* check reserved bits */
-    if (message[1] & ~MESSAGE_TYPE_MASK != 0x00) {
+    if ((message[1] & ~MESSAGE_TYPE_MASK) != 0x00) {
         return MQTT_FIXED_HEADER_RESERVED_ERROR;
     }
     
