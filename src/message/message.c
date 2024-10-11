@@ -118,3 +118,16 @@ int locate_string_field(uint8_t *buffer, uint32_t buffer_len, uint8_t **str, uin
     return MQTT_SUCCESS;
 }
 
+
+int message_type_filter(uint8_t *message, uint32_t message_len, mqtt_message_type_t *message_type)
+{
+    uint8_t type = (message[0] & MESSAGE_TYPE_MASK) >> 4;
+    
+    if (type < MQTT_MESSAGE_TYPE_MAX && type > MQTT_MESSAGE_TYPE_MIN) {
+        *message_type = type;
+        return MQTT_SUCCESS;
+    } else {
+        *message_type = MQTT_MESSAGE_TYPE_MAX;
+        return MQTT_MESSAGE_TYPE_ERROR;
+    }
+}

@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include "common.h"
+
 #define MESSAGE_TYPE_MASK 0xF0
 
 #define message_type_encode(message_type) (((message_type << 4) & MESSAGE_TYPE_MASK))
@@ -21,5 +23,7 @@ int build_string_field(uint8_t *str, uint16_t str_len, uint8_t *buffer, uint32_t
 int parse_string_field(uint8_t *buffer, uint32_t buffer_len, uint8_t *str, uint16_t *str_len);
 
 int locate_string_field(uint8_t *buffer, uint32_t buffer_len, uint8_t **str, uint16_t *str_len);
+
+int message_type_filter(uint8_t *message, uint32_t message_len, mqtt_message_type_t *message_type);
 
 #endif
