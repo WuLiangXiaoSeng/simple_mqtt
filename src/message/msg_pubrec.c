@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
 
 #include "log.h"
 #include "mqtt.h"

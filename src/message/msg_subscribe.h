@@ -3,12 +3,6 @@
 
 #include "common.h"
 
-typedef struct topic_filter_ {
-    uint8_t *topic_filter;
-    uint16_t topic_filter_len;
-    uint8_t qos;
-    struct topic_filter_ *next;
-} topic_filter_t;
 
 int topic_filter_release(topic_filter_t *head);
 

@@ -9,7 +9,7 @@
 #include "msg_suback.h"
 
 #define SUBACK_TOPIC_NUM_DEFAULT 10
-#define SUBACK_TOPIC_NUM_THRESHOLD 4
+#define SUBACK_TOPIC_NUM_THRESHOLD 40
 
 int suback_data_init(suback_data_t *data, uint16_t capacity)
 {

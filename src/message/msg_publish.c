@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
 
 #include "message.h"
 #include "common.h"
@@ -90,7 +91,7 @@ int publish_message_build(uint8_t dup, uint8_t qos, uint8_t retain,
     *message_len += feild_len;
     
     if (qos > MQTT_QOS_0) {
-        packet_id = htons(packet_id);
+        *packet_id = htons(*packet_id);
         memcpy(message, packet_id, sizeof(uint16_t));
         message += sizeof(uint16_t);
         *message_len += sizeof(uint16_t);
