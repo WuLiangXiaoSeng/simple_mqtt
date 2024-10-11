@@ -28,6 +28,13 @@ typedef enum {
     MQTT_QOS_REJECT = 0x80,
 } mqtt_qos_t;
 
+typedef struct topic_filter_ {
+    uint8_t *topic_filter;
+    uint16_t topic_filter_len;
+    uint8_t qos;
+    struct topic_filter_ *next;
+} topic_filter_t;
+
 #define MQTT_REMAIN_LEN_ENCODE_MAX_LENGTH 4
 
 #endif
