@@ -1,5 +1,5 @@
-#ifndef __MQTT_MSG_PUBREL_H__
-#define __MQTT_MSG_PUBREL_H__
+#ifndef __MQTT_MSG_PUBCOMP_H__
+#define __MQTT_MSG_PUBCOMP_H__
 
 #define PUBCOMP_MESSAGE_LENGTH 4
 

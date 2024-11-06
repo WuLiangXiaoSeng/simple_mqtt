@@ -4,6 +4,9 @@
 #include "common.h"
 #include "message.h"
 
+/* 暂时只支持最大23字节的id */
+#define MQTT_CLIENT_ID_LEN_MAX 23
+
 #define CONECT_PROTOCOL_NAME "MQTT"
 #define CONECT_PROTOCOL_NAME_LEN 0x04
 #define CONECT_PROTOCOL_LEVEL 0x04    // 3.1.1
@@ -42,6 +45,14 @@ typedef struct connect_payload_ {
     uint16_t password_len;
     uint8_t *password;
 } connect_payload_t;
+
+int connect_message_len_calc(connect_payload_t *conn_payload,
+                                       uint16_t keep_alive,
+                                       uint8_t clean_session,
+                                       uint8_t will_retain,
+                                       uint8_t will_qos,
+                                       uint32_t *message_len);
+
 
 /**
  * @brief 构建CONNECT报文

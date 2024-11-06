@@ -64,7 +64,7 @@ int suback_data_release(suback_data_t *data)
         return MQTT_INVALID_PARAM;
     }
     
-    free(data->qos);
+    if (data->qos == NULL) free(data->qos);
     data->qos = NULL;
     
     return MQTT_SUCCESS;

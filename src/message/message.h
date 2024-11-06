@@ -26,4 +26,6 @@ int locate_string_field(uint8_t *buffer, uint32_t buffer_len, uint8_t **str, uin
 
 int message_type_filter(uint8_t *message, uint32_t message_len, mqtt_message_type_t *message_type);
 
+int message_fixed_header_decode(uint8_t *message, uint32_t *message_len, mqtt_message_type_t *message_type, uint32_t *remain_len);
+
 #endif

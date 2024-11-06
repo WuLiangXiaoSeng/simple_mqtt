@@ -10,8 +10,6 @@
 #include "mqtt.h"
 #include "message.h"
 
-/* 暂时只支持最大23字节的id */
-#define MQTT_CLIENT_ID_LEN_MAX 23
 
 #define MQTT_CONNECT_KEEPALIVE_MAX 0xFFFF
 #define MQTT_CONNECT_KEEPALIVE_DEFAULT 60
@@ -24,6 +22,25 @@
 
 #define bit_is_set(flags, index) \
     ((flags >> index) & 1)
+
+int connect_message_len_calc(connect_payload_t *conn_payload,
+                                       uint16_t keep_alive,
+                                       uint8_t clean_session,
+                                       uint8_t will_retain,
+                                       uint8_t will_qos,
+                                       uint32_t *message_len)
+{   
+    *message_len = 0;
+    
+    *message_len += 1 + 4 + sizeof(connect_variable_header_t); /* message type + remain_length(4 bytes) + variable header */
+    *message_len += conn_payload->client_id_len + 2;
+    *message_len += conn_payload->will_topic_len + 2;
+    *message_len += conn_payload->will_msg_len + 2;
+    *message_len += conn_payload->username_len + 2;
+    *message_len += conn_payload->password_len + 2;
+    
+    return MQTT_SUCCESS;
+}
 
 /**
  * @brief 构建CONNECT报文

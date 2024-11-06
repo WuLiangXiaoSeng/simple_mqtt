@@ -17,6 +17,23 @@
  * byteN+3~byteM: Payload, String(Topic Filter1) + QoS1 + String(Topic Filter2) + QoS2 + ...
 */
 
+int subscribe_message_len_calc(topic_filter_t *filter_list, uint32_t *message_len)
+{
+    if (filter_list == NULL || message_len == NULL) {
+        return MQTT_INVALID_PARAM;
+    }
+    
+    *message_len = 1 + 4 + 2;
+
+    topic_filter_t *cur = filter_list;
+    while (cur != NULL) {
+        *message_len += cur->topic_filter_len + 2 + 1; /* Topic Filter + 2(Filter Length) + 1(QoS) */
+        cur = cur->next;
+    }
+    
+    return MQTT_SUCCESS;
+}
+
 int subscribe_message_build(uint16_t packet_id, topic_filter_t *filter_list, uint8_t *message, uint32_t *message_len)
 {
     if (filter_list == NULL || message == NULL || message_len == NULL) {

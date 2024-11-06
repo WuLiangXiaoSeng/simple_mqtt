@@ -15,7 +15,14 @@ typedef enum {
 
 
 #define CONNACK_SP_MASK 0b00000001
+#define CONNACK_MESSAGE_LEN 5 /* CONNACK Message 长度一般为4 */
 
+/**
+ * sp 标志：
+ *  0：客户端未建立持久会话，服务器未建立持久会话
+ *  1：客户端已建立持久会话，服务器已建立持久会话
+ *  当connect报文中clean session为1时，sp一定为0
+*/
 typedef struct connack_variable_header_ {
     uint8_t reserved_and_sp;  /* reserved(7 bit) and session present flag(1 bit) */
     uint8_t connack_code;

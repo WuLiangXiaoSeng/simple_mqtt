@@ -81,6 +81,11 @@ int connack_message_parse(uint8_t *message, uint32_t message_len,
         return MQTT_CONNACK_MESSAGE_ERROR;
     }
     *sp = (variable_header->reserved_and_sp & CONNACK_SP_MASK);
-    
+
+    if (*connack_code != MQTT_CONNACK_ACCEPTED && sp != 0) {
+        mqtt_log_error("sp must be 0 when connack code is not 0");
+        return MQTT_CONNACK_MESSAGE_ERROR;
+    } 
+
     return MQTT_SUCCESS;
 }

@@ -1,6 +1,11 @@
 #ifndef __MQTT_MSG_SUBACK_H__
 #define __MQTT_MSG_SUBACK_H__
 
+/**
+ * qos suback 中qos的动态数据
+ * size 动态数组的大小
+ * capacity 动态数组的容量
+*/
 typedef struct suback_data_ {
     uint8_t *qos;
     uint16_t size;

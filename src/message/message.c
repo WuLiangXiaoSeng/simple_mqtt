@@ -131,3 +131,23 @@ int message_type_filter(uint8_t *message, uint32_t message_len, mqtt_message_typ
         return MQTT_MESSAGE_TYPE_ERROR;
     }
 }
+
+int message_fixed_header_decode(uint8_t *message, uint32_t *message_len, mqtt_message_type_t *message_type, uint32_t *remain_len)
+{
+    if(message == NULL || message_len == NULL || remain_len == NULL || message_type == NULL) {
+        mqtt_log_error("invalid param");
+        return MQTT_INVALID_PARAM;
+    }
+    uint8_t type = (message[0] & MESSAGE_TYPE_MASK) >> 4;
+    uint32_t encode_len = *message_len;
+    
+    if (type > MQTT_MESSAGE_TYPE_MAX || type < MQTT_MESSAGE_TYPE_MIN) {
+        return MQTT_MESSAGE_TYPE_ERROR;
+    }
+    
+    remain_length_decode(message + 1, &encode_len, remain_len);
+    
+    *message_type = type;
+    *message_len = remain_len + encode_len + 1;
+    return MQTT_SUCCESS;
+}
