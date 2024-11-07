@@ -4,13 +4,13 @@
 #include <stdint.h>
 #include <sys/time.h>
 
-typedef struct message_keep_{
+typedef struct message_send_{
     uint16_t packet_id;
     uint8_t *message;
     uint32_t message_len;
     uint8_t qos;
     time_t timestamp;
-    message_send_t *next;
+    struct message_send_ *next;
 } message_send_t;
 
 int message_send_add(message_send_t **list, uint16_t packet_id, uint8_t *message, uint32_t message_len, uint8_t qos);

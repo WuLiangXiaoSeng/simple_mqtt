@@ -13,6 +13,7 @@ int publish_msg_process(deamon_context_t *ctx,
                         publish_callback pub_cb);
 int puback_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t message_len);
 int pubrec_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t message_len);
+int pubrel_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t message_len);
 int pubcomp_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t message_len);
 int suback_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t message_len);
 int unsuback_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t message_len);

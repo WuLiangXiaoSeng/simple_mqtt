@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <memory.h>
 
 #include "message_keep.h"
 #include "mqtt.h"
@@ -66,9 +67,10 @@ int message_send_remove(message_send_t **list, uint16_t packet_id)
     message_send_t *curr, *next;
     curr = *list;
     
-    if (*list->packet_id == packet_id) {
-        *list = *list->next;
+    if ((*list)->packet_id == packet_id) {
+        *list = (*list)->next;
         free(curr);
+        return MQTT_SUCCESS;
     }
     
     while (curr->next != NULL) {

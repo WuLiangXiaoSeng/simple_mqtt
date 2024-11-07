@@ -41,7 +41,7 @@ int network_connect(const char *hostname, int port, network_connection_t *conn)
 
 int network_close(network_connection_t *conn) 
 {
-    close(conn->socket_fd);
+    return close(conn->socket_fd);
 }
 
 

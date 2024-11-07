@@ -9,7 +9,7 @@ BUILD_DIR=build
 LIB_DIR=lib
 
 # 源文件和目标文件
-SRC = $(wildcard log/*.c network/*.c message/*.c)
+SRC = $(wildcard log/*.c network/*.c message/*.c client/*.c)
 # OBJ = $(SRC:.c=.o)
 OBJ = $(foreach file,$(SRC),$(file:.c=.o))
 

@@ -90,7 +90,7 @@ static int connect_message_send(mqtt_client_t *client, mqtt_client_config_t *con
     uint32_t ack_len = CONNACK_MESSAGE_LEN;
     connack_code_t connack_code;
 
-    ret = connect_message_len_calc(&conn_payload, &message_len);
+    ret = connect_message_len_calc(&conn_payload, config->keep_alive, config->clean_session, config->will_retain, config->will_qos, &message_len);
     message = (uint8_t *)malloc(message_len);
     if (message == NULL) {
         mqtt_log_error("malloc failed, message_len: %u", message_len);
@@ -105,7 +105,7 @@ static int connect_message_send(mqtt_client_t *client, mqtt_client_config_t *con
     }
     
     /* 发送CONNECT报文并等待server端回复 */
-    ret = message_send_and_wait_ack(conn, message, message_len, connack_message, &ack_len);
+    ret = message_send_and_wait_ack(&(client->conn), message, message_len, connack_message, &ack_len);
     if (ret != MQTT_SUCCESS) {
         goto free;
     }
@@ -130,8 +130,7 @@ static int connect_message_send(mqtt_client_t *client, mqtt_client_config_t *con
     client->client_id_len = config->client_id_len;
     /* packet id init */
     client->packet_id_next = 1;
-    client->message_send_list_size = 0;
-    client->message_send_list = NULL;
+    // client->message_send_list = NULL;
     
     client->state = MQTT_CLIENT_STATE_CONNECTED;
     
@@ -195,12 +194,12 @@ int mqtt_client_subscribe(mqtt_client_t *client, uint8_t *topic, uint16_t topic_
     topic_filter_t topic_filter;
     memset(&topic_filter, 0, sizeof(topic_filter));
     
-    topic_filter.topic = topic;
-    topic_filter.topic_len = topic_len;
+    topic_filter.topic_filter = topic;
+    topic_filter.topic_filter_len = topic_len;
     topic_filter.qos = qos;
     topic_filter.next = NULL;
 
-    ret = subscribe_message_len_calc(topic_filter, &message_len);
+    ret = subscribe_message_len_calc(&topic_filter, &message_len);
 
     message = (uint8_t *)malloc(message_len);
     if (message == NULL) {
@@ -208,7 +207,7 @@ int mqtt_client_subscribe(mqtt_client_t *client, uint8_t *topic, uint16_t topic_
         return MQTT_MEMORY_NOBUFFER;
     }
 
-    ret = subscribe_message_build(client->packet_id_next, topic_filter, message, &message_len);
+    ret = subscribe_message_build(client->packet_id_next, &topic_filter, message, &message_len);
     if (ret != MQTT_SUCCESS) {
         mqtt_log_error("subscribe_message_build failed");
         goto free;
@@ -244,6 +243,8 @@ int mqtt_client_publish(mqtt_client_t *client, uint8_t *topic, uint16_t topic_le
     if (client == NULL || topic == NULL || topic_len == 0 || payload == NULL || payload_len == 0) {
         return MQTT_INVALID_PARAM;
     }
+
+    return MQTT_SUCCESS;
 }
 
 int mqtt_client_destroy(mqtt_client_t *client)

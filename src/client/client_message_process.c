@@ -6,6 +6,7 @@
 #include "common.h"
 #include "client_deamon.h"
 #include "msg_pingresp.h"
+#include "msg_pingreq.h"
 #include "msg_publish.h"
 #include "msg_puback.h"
 #include "msg_pubrec.h"
@@ -13,6 +14,9 @@
 #include "msg_pubcomp.h"
 #include "msg_suback.h"
 #include "msg_unsuback.h"
+#include "message_keep.h"
+
+extern message_send_t *message_send_list;
 
 int pingreq_msg_sent(deamon_context_t *ctx)
 {
@@ -50,6 +54,12 @@ int puback_msg_sent(deamon_context_t *ctx, uint16_t packet_id)
     if (ret == -1) {
         mqtt_log_error("send puback message failed");
         return MQTT_MESSAGE_SEND_ERROR;
+    }
+
+    /* 从发送队列删除packet_id */
+    ret = message_send_remove(&message_send_list, packet_id);
+    if (ret != MQTT_SUCCESS) {
+        mqtt_log_error("remove message from send list failed");
     }
 
     return MQTT_SUCCESS;
@@ -135,7 +145,9 @@ int publish_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t messag
         return ret;
     }
 
-    pub_cb(topic, topic_len, payload, payload_len);
+    if(pub_cb != NULL) {
+        pub_cb(topic, topic_len, payload, payload_len);
+    }
     
     if (qos == MQTT_QOS_1) {
         ret = puback_msg_sent(ctx, packet_id);
@@ -157,6 +169,8 @@ int puback_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t message
         mqtt_log_error("parse puback message failed");
         return ret;
     }
+
+
     
     return ret;
 }
@@ -173,6 +187,20 @@ int pubrec_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t message
     }
     
     ret = pubrel_msg_sent(ctx, packet_id);
+    return ret;
+}
+
+int pubrel_msg_process(deamon_context_t *ctx, uint8_t *message, uint32_t message_len)
+{
+    int ret = MQTT_SUCCESS;
+    uint16_t packet_id;
+    
+    ret = pubrel_message_parse(message, message_len, &packet_id);
+    if (ret != 0) {
+        mqtt_log_error("parse pubrel message failed");
+        return ret;
+    }
+
     return ret;
 }
 

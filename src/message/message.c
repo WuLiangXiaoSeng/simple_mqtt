@@ -148,6 +148,6 @@ int message_fixed_header_decode(uint8_t *message, uint32_t *message_len, mqtt_me
     remain_length_decode(message + 1, &encode_len, remain_len);
     
     *message_type = type;
-    *message_len = remain_len + encode_len + 1;
+    *message_len = *remain_len + encode_len + 1;
     return MQTT_SUCCESS;
 }

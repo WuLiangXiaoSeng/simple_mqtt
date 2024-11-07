@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ptherad.h>
+#include <pthread.h>
 #include <sys/epoll.h>
 #include <sys/timerfd.h>
 #include <time.h>
@@ -132,31 +132,37 @@ int process_socket_event(deamon_context_t *ctx)
                 mqtt_log_warn("receive a connack message, ignore."); /*client deamon 创建时，已经和服务端建立连接 */
                 break;
             case MQTT_MESSAGE_TYPE_PUBLISH:
-                ret = publish_msg_process(buffer, message_len, publish_cb);
+                ret = publish_msg_process(ctx, buffer, message_len, publish_cb);
                 break;
             case MQTT_MESSAGE_TYPE_PUBACK:
+                ret = puback_msg_process(ctx, buffer, message_len);
                 break;
             case MQTT_MESSAGE_TYPE_PUBREC:
+                ret = pubrec_msg_process(ctx, buffer, message_len);
                 break;
             case MQTT_MESSAGE_TYPE_PUBREL:
+                ret = pubrel_msg_process(ctx, buffer, message_len);
                 break;
             case MQTT_MESSAGE_TYPE_PUBCOMP:
+                ret = pubcomp_msg_process(ctx, buffer, message_len);
                 break;
             case MQTT_MESSAGE_TYPE_SUBSCRIBE:
                 mqtt_log_warn("receive a subscribe message, ignore");
                 break;
             case MQTT_MESSAGE_TYPE_SUBACK:
+                ret = suback_msg_process(ctx, buffer, message_len);
                 break;
             case MQTT_MESSAGE_TYPE_UNSUBSCRIBE:
                 mqtt_log_warn("receive a unsubscribe message, ignore");
                 break;
             case MQTT_MESSAGE_TYPE_UNSUBACK:
+                ret = unsuback_msg_process(ctx, buffer, message_len);
                 break;
             case MQTT_MESSAGE_TYPE_PINGREQ:
                 mqtt_log_warn("receive a ping request message, ignore");
                 break;
             case MQTT_MESSAGE_TYPE_PINGRESP:
-                
+                ret = pingresp_msg_process(ctx, buffer, message_len);
                 break;
             case MQTT_MESSAGE_TYPE_DISCONNECT:
                 mqtt_log_warn("receive a disconnect message, ignore");
@@ -173,8 +179,6 @@ int process_socket_event(deamon_context_t *ctx)
     return 0;
 }
 
-// str = stack / rich 
-// 中空中轴
 int process_timer_event(deamon_context_t *ctx)
 {
     int ret;
@@ -193,7 +197,7 @@ int process_timer_event(deamon_context_t *ctx)
     /* 检查keep_alive_timestamp是否超时 */
     if (now - keep_alive_timestamp >= ctx->client->keep_alive) {
         mqtt_log_debug("keep alive timeout");
-        ret = ping_req_sent(ctx);
+        ret = pingreq_msg_sent(ctx);
         if (ret != MQTT_SUCCESS) {
             goto error;
         }
@@ -250,7 +254,7 @@ void *client_deamon_thread(void *arg)
  *  client deamon 创建
  * 
 */
-int client_deamon_create(mqtt_client_t *client, ptherad_t *ph)
+int client_deamon_create(mqtt_client_t *client, pthread_t *ph)
 {
     if (ph == NULL) {
         mqtt_log_error("ph is NULL");
