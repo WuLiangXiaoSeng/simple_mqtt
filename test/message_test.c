@@ -94,11 +94,26 @@ int test_remain_length_decode()
     return 0;
 }
 
+int test_message_type_filter()
+{
+    uint8_t message[4] = {0};
+    mqtt_message_type_t message_type;
+    char *type_name[] = {"", "CONNECT", "CONNACK", "PUBLISH", "PUBACK", "PUBREC", "PUBREL", "PUBCOMP", "SUBSCRIBE", "SUBACK", "UNSUBSCRIBE", "UNSUBACK", "PINGREQ", "PINGRESP", "DISCONNECT", "UNKNOWN"};
+    for (uint8_t i = 0; i < 15; i++) {
+        message[0] = message_type_encode(i);
+        mini_hexdump(message, 4);
+        message_type_filter(message, 4, &message_type);
+        mini_printf("message type: %s\n", type_name[message_type]);
+    }
+
+    return 0;
+}
+
 int main()
 {
     getchar();
     // test_remain_length_encode();
-    test_remain_length_decode();
+    test_message_type_filter();
     
     return 0;
 }

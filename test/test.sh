@@ -14,5 +14,11 @@ run_function()
     $BUILD_DIR/$1
 }
 
-
-run_function msg_${1}_test
+case $1 in
+    "msg_test")
+        $BUILD_DIR/message_test
+        ;;
+    *)
+        run_function msg_${1}_test
+        ;;
+esac
