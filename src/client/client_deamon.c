@@ -54,8 +54,8 @@ void timeout_cb_default(message_send_t *msg)
 // 回调函数指针
 // timeout_callback timeout_cb = NULL;
 // publish_callback publish_cb = NULL;
-timeout_callback timeout_cb = publish_cb_default;
-publish_callback publish_cb = timeout_cb_default;
+timeout_callback timeout_cb = timeout_cb_default;
+publish_callback publish_cb = publish_cb_default;
 
 int publish_callback_register(publish_callback pc)
 {
@@ -93,6 +93,9 @@ int init_global_timer(time_t timeout)
     return timer_fd;
 }
 
+/**
+ * 处理socket事件
+*/
 int process_socket_event(deamon_context_t *ctx) 
 {
     int ret;
@@ -243,6 +246,9 @@ void *client_deamon_thread(void *arg)
                 process_socket_event(ctx);
             } else if (events[i].data.fd == ctx->timer_fd) {
                 process_timer_event(ctx);
+            } else {
+                mqtt_log_error("unknown event fd: %d", events[i].data.fd);
+                continue;
             }
         }
     }
@@ -312,6 +318,7 @@ int client_deamon_create(mqtt_client_t *client, pthread_t *ph)
     }
 
     ret = MQTT_SUCCESS;
+    pthread_join(tid, NULL);  // 阻塞等待线程结束
     
 close2:
     close(ctx->epoll_fd);
