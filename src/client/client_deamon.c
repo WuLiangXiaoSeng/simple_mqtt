@@ -267,6 +267,7 @@ int client_deamon_create(mqtt_client_t *client, pthread_t *ph)
         return MQTT_INVALID_PARAM;
     }
     int ret = 0;
+    int tid = 0;
     struct epoll_event event;
     deamon_context_t *ctx = (deamon_context_t *)malloc(sizeof(deamon_context_t));
     if (ctx == NULL) {
@@ -311,7 +312,7 @@ int client_deamon_create(mqtt_client_t *client, pthread_t *ph)
     pthread_mutex_init(&lock, NULL);
     ctx->client = client;
     
-    if (pthread_create(ph, NULL, client_deamon_thread, ctx) != 0) {
+    if ((tid = pthread_create(ph, NULL, client_deamon_thread, ctx)) != 0) {
         mqtt_log_error("pthread_create failed");
         ret = -1;
         goto close2;

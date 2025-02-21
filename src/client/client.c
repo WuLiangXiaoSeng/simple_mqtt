@@ -238,11 +238,23 @@ free:
     return ret;
 }
 
-int mqtt_client_publish(mqtt_client_t *client, uint8_t *topic, uint16_t topic_len, uint8_t *payload, uint32_t payload_len, uint8_t qos)
+int mqtt_client_publish(mqtt_client_t *client, uint8_t *topic, uint16_t topic_len, 
+                        uint8_t *payload, uint32_t payload_len, uint8_t qos)
 {
     if (client == NULL || topic == NULL || topic_len == 0 || payload == NULL || payload_len == 0) {
         return MQTT_INVALID_PARAM;
     }
+
+    if (qos != 0) {
+        mqtt_log_warn("qos only support 0");
+        return MQTT_PUBLISH_QOS_ERROR;
+    }
+
+    int ret = 0;
+    uint32_t message_len = 0;
+    uint8_t *message = NULL;
+
+    ret = 0;
 
     return MQTT_SUCCESS;
 }

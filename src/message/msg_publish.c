@@ -9,6 +9,23 @@
 #include "log.h"
 
 
+// int publish_message_len_calc(uint16_t topic_len, uint32_t payload_len, uint32_t *message_len)
+// {
+//     if (message_len == NULL) {
+//         return MQTT_INVALID_PARAM;
+//     }
+
+//     if (topic_len == 0) {
+//         return MQTT_INVALID_PARAM;
+//     }
+
+//     *message_len = 1 + topic_len + 2; /* topic */
+
+//     remain_length_encode()
+//     *message_len += payload_len;
+// }
+
+
 int publish_message_build(uint8_t dup, uint8_t qos, uint8_t retain, 
                          uint8_t *topic, uint16_t topic_len,
                          uint16_t *packet_id,

@@ -1,4 +1,4 @@
-# cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0)
 project(simple_mqtt VERSION 0.1)
 
 set(DIR_SRC ${PROJECT_SOURCE_DIR}/src)
